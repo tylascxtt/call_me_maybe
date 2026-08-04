@@ -1,0 +1,40 @@
+[project]
+name = "call-me-maybe"
+version = "0.1.0"
+description = "Function calling via constrained decoding for small LLMs."
+requires-python = ">=3.10"
+dependencies = [
+    "numpy>=1.26",
+    "pydantic>=2.6",
+    "llm-sdk",
+]
+
+[tool.uv]
+package = false
+
+[dependency-groups]
+dev = ["pytest>=8.0", "flake8>=7.0", "mypy>=1.8"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
+
+[tool.uv.sources]
+llm-sdk = { path = "./llm_sdk", editable = true }
+
+[tool.mypy]
+python_version = "3.10"
+warn_return_any = true
+warn_unused_ignores = true
+ignore_missing_imports = true
+disallow_untyped_defs = true
+check_untyped_defs = true
+exclude = ["llm_sdk/", "artifacts/", ".venv/"]
+
+# llm_sdk is the provided package; do not analyse it (it imports torch). Treat
+# it as untyped so importing Small_LLM_Model resolves to Any.
+[[tool.mypy.overrides]]
+module = ["llm_sdk", "llm_sdk.*"]
+follow_imports = "skip"
+follow_imports_for_stubs = true
+ignore_missing_imports = true
